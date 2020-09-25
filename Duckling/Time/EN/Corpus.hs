@@ -45,6 +45,7 @@ defaultCorpus = (testContext, testOptions, allExamples ++ custom)
                  , "10.31.1974"
                  , "31/Oct/1974"
                  , "31st Oct 1974"
+                 , "1974 31st Oct"
                  ]
       , examples (datetime (2013, 4, 25, 16, 0, 0) Minute)
                  [ "4/25 at 4:00pm"
@@ -195,6 +196,7 @@ allExamples = concat
              ]
   , examples (datetime (2014, 1, 1, 0, 0, 0) Year)
              [ "in 2014"
+             , "2014"
              ]
   , examples (datetime (2013, 2, 11, 0, 0, 0) Day)
              [ "yesterday"

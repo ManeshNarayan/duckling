@@ -525,6 +525,50 @@ ruleDOMMonthYear = Rule
       _ -> Nothing
   }
 
+ruleYearDOMMonth = Rule
+  { name = "year/<day-of-month>(ordinal or number)/<named-month>"
+  , pattern =
+    [ regex "(\\d{4})"
+    , regex "[-/\\s]"
+    , Predicate isDOMValue
+    , regex "[-/\\s]"
+    , Predicate isAMonth
+    ]
+  , prod = \tokens -> case tokens of
+      (Token RegexMatch (GroupMatch (match:_)):
+       _:
+       token:
+       _:
+       Token Time td:
+       _) -> do
+         intVal <- parseInt match
+         dom <- intersectDOM td token
+         Token Time <$> intersect dom (year intVal)
+      _ -> Nothing
+  }
+
+ruleYearMonthDOM = Rule
+  { name = "year/<named-month>/<day-of-month>(ordinal or number)"
+  , pattern =
+    [ regex "(\\d{4})"
+    , regex "[-/\\s]"
+    , Predicate isAMonth
+    , regex "[-/\\s]"
+    , Predicate isDOMValue
+    ]
+  , prod = \tokens -> case tokens of
+      (Token RegexMatch (GroupMatch (match:_)):
+       _:
+       Token Time td:
+       _:
+       token:
+       _) -> do
+         intVal <- parseInt match
+         dom <- intersectDOM td token
+         Token Time <$> intersect dom (year intVal)
+      _ -> Nothing
+  }
+
 ruleDOMOrdinalMonthYear :: Rule
 ruleDOMOrdinalMonthYear = Rule
   { name = "<day-of-month>(ordinal) <named-month> year"
@@ -949,6 +993,32 @@ ruleYYYYQQ = Rule
         y <- parseInt yy
         q <- parseInt qq
         tt . cycleNthAfter True TG.Quarter (q - 1) $ year y
+      _ -> Nothing
+  }
+
+ruleYYYY :: Rule
+ruleYYYY = Rule
+  { name = "yyyy"
+  , pattern =
+    [ regex "(([4-9][0-9])|(\\d{3,4}))"
+    ]
+  , prod = \case
+      (Token RegexMatch (GroupMatch (yy:_)):_) -> do
+        y <- parseInt yy
+        tt $ year y
+      _ -> Nothing
+  }
+
+ruleDD :: Rule
+ruleDD = Rule
+  { name = "dd"
+  , pattern =
+    [ regex "(3[01]|[12]\\d|0?[1-9])"
+    ]
+  , prod = \case
+      (Token RegexMatch (GroupMatch (dd:_)):_) -> do
+        d <- parseInt dd
+        tt $ dayOfMonth d
       _ -> Nothing
   }
 
@@ -2637,6 +2707,8 @@ rules =
   , ruleTheDOMOfMonth
   , ruleDOMOrdinalMonthYear
   , ruleDOMMonthYear
+  , ruleYearDOMMonth
+  , ruleYearMonthDOM
   , ruleIdesOfMonth
   , ruleTODLatent
   , ruleAtTOD
@@ -2665,6 +2737,8 @@ rules =
   , ruleYYYYMM
   , ruleYYYYMMDD
   , ruleMMYYYY
+  , ruleYYYY
+  , ruleDD
   , ruleNoonMidnightEOD
   , rulePartOfDays
   , ruleEarlyMorning
