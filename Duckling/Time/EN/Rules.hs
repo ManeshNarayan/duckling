@@ -2156,7 +2156,6 @@ ruleCycleThisLastNext = Rule
             "next"          -> tt $ cycleNth grain 1
             "upcoming"      -> tt $ cycleNth grain 1
             "the following" -> tt $ cycleNth grain 1
-            "the"           -> tt $ cycleNth grain 0
             _ -> Nothing
       _ -> Nothing
   }
