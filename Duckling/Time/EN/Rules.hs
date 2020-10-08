@@ -2767,23 +2767,23 @@ rules =
   , ruleTODPrecision
   , ruleTODPOD
   , rulePrecisionTOD
-  , ruleIntervalFromMonthDDDD
-  , ruleIntervalFromDDDDMonth
-  , ruleIntervalFromDDDDOfMonth
-  , ruleIntervalMonthDDDD
-  , ruleIntervalDDDDMonth
-  , ruleIntervalDash
-  , ruleIntervalSlash
-  , ruleIntervalFrom
-  , ruleIntervalBetween
-  , ruleIntervalTODDash
-  , ruleIntervalTODFrom
-  , ruleIntervalTODAMPM
-  , ruleIntervalTODBetween
-  , ruleIntervalBy
-  , ruleIntervalByTheEndOf
-  , ruleIntervalUntilTime
-  , ruleIntervalAfterFromSinceTime
+  --, ruleIntervalFromMonthDDDD
+  --, ruleIntervalFromDDDDMonth
+  --, ruleIntervalFromDDDDOfMonth
+  --, ruleIntervalMonthDDDD
+  --, ruleIntervalDDDDMonth
+  --, ruleIntervalDash
+  --, ruleIntervalSlash
+  --, ruleIntervalFrom
+  --, ruleIntervalBetween
+  --, ruleIntervalTODDash
+  --, ruleIntervalTODFrom
+  --, ruleIntervalTODAMPM
+  --, ruleIntervalTODBetween
+  --, ruleIntervalBy
+  --, ruleIntervalByTheEndOf
+  --, ruleIntervalUntilTime
+  --, ruleIntervalAfterFromSinceTime
   , ruleCycleTheAfterBeforeTime
   , ruleCycleThisLastNext
   , ruleDOMOfTimeMonth
@@ -2806,13 +2806,13 @@ rules =
   , ruleDayInDuration
   , ruleInDurationAtTime
   , ruleDurationAfterBeforeTime
-  , ruleIntervalForDurationFrom
-  , ruleIntervalFromTimeForDuration
-  , ruleIntervalTimeForDuration
+  --, ruleIntervalForDurationFrom
+  --, ruleIntervalFromTimeForDuration
+  --, ruleIntervalTimeForDuration
   , ruleInNumeral
   , ruleTimezone
   , ruleTimezoneBracket
-  , ruleIntervalDashTimezone
+  --, ruleIntervalDashTimezone
   , rulePartOfMonth
   , ruleEndOrBeginningOfMonth
   , ruleEndOrBeginningOfYear
