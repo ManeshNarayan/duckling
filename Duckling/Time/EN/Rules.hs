@@ -36,6 +36,20 @@ import qualified Duckling.Ordinal.Types as TOrdinal
 import qualified Duckling.Time.Types as TTime
 import qualified Duckling.TimeGrain.Types as TG
 
+ruleIntersect2 :: Rule
+ruleIntersect2 = Rule
+  { name = "intersect2"
+  , pattern =
+    [ Predicate $ or . sequence [isNotLatent, isGrainOfTime TG.Year]
+    , Predicate $ isGrainOfTime TG.Month
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Time td1:Token Time td2:_)
+        | (not $ TTime.latent td1) || (not $ TTime.latent td2) ->
+        Token Time . notLatent <$> intersect td1 td2
+      _ -> Nothing
+  }
+
 ruleIntersect :: Rule
 ruleIntersect = Rule
   { name = "intersect"
@@ -510,7 +524,7 @@ ruleDOMMonthYear = Rule
     , regex "[-/\\s]"
     , Predicate isAMonth
     , regex "[-/\\s]"
-    , regex "(\\d{4})"
+    , regex "(([4-9][0-9])|(\\d{4}))"
     ]
   , prod = \tokens -> case tokens of
       (token:
@@ -528,7 +542,7 @@ ruleDOMMonthYear = Rule
 ruleYearDOMMonth = Rule
   { name = "year/<day-of-month>(ordinal or number)/<named-month>"
   , pattern =
-    [ regex "(\\d{4})"
+    [ regex "(([4-9][0-9])|(\\d{4}))"
     , regex "[-/\\s]"
     , Predicate isDOMValue
     , regex "[-/\\s]"
@@ -550,7 +564,7 @@ ruleYearDOMMonth = Rule
 ruleYearMonthDOM = Rule
   { name = "year/<named-month>/<day-of-month>(ordinal or number)"
   , pattern =
-    [ regex "(\\d{4})"
+    [ regex "(([4-9][0-9])|(\\d{4}))"
     , regex "[-/\\s]"
     , Predicate isAMonth
     , regex "[-/\\s]"
@@ -575,7 +589,7 @@ ruleDOMOrdinalMonthYear = Rule
   , pattern =
     [ Predicate isDOMOrdinal
     , Predicate isAMonth
-    , regex "(\\d{2,4})"
+    , regex "(([4-9][0-9])|(\\d{4}))"
     ]
   , prod = \tokens -> case tokens of
       (token:Token Time td:Token RegexMatch (GroupMatch (match:_)):_) -> do
@@ -1000,7 +1014,7 @@ ruleYYYY :: Rule
 ruleYYYY = Rule
   { name = "yyyy"
   , pattern =
-    [ regex "(([4-9][0-9])|(\\d{3,4}))"
+    [ regex "(([4-9][0-9])|(\\d{4}))"
     ]
   , prod = \case
       (Token RegexMatch (GroupMatch (yy:_)):_) -> do
@@ -2672,7 +2686,8 @@ ruleMinutesToHOD = Rule
 
 rules :: [Rule]
 rules =
-  [ ruleIntersect
+  [ ruleIntersect2
+  , ruleIntersect
   , ruleIntersectOf
   , ruleIntersectYear
   , ruleAbsorbOnDay

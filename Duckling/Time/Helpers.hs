@@ -438,7 +438,7 @@ month n = form TTime.Month {TTime.month = n} $ TTime.timedata'
 year :: Int -> TimeData
 year n = TTime.timedata'{TTime.timePred = timeYear y, TTime.timeGrain = TG.Year}
   where
-    y = if n <= 99 then mod (n + 50) 100 + 2000 - 50 else n
+    y = if n <= 99 then 1900 + n else n
 
 yearADBC :: Int -> TimeData
 yearADBC n =
