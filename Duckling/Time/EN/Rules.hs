@@ -128,6 +128,133 @@ ruleAbsorbInMonthYear = Rule
       _ -> Nothing
   }
 
+ruleAbsorbAndTheMonthIs :: Rule
+ruleAbsorbAndTheMonthIs = Rule
+  { name = "and? the? month is? <named-month>"
+  , pattern =
+    [ regex "(and )?(the )?(month) is?"
+    , Predicate isAMonth
+    ]
+  , prod = \tokens -> case tokens of
+      (_:Token Time td:_) -> tt $ notLatent td
+      _ -> Nothing
+  }
+
+ruleAbsorbAndTheMMIs :: Rule
+ruleAbsorbAndTheMMIs = Rule
+  { name = "and? the? month is? mm"
+  , pattern =
+    [ regex "(and )?(the )?(month) is?"
+    , regex "(1[0-2]|0?[1-9])"
+    ]
+  , prod = \tokens -> case tokens of
+      (_:
+       Token RegexMatch (GroupMatch (match:_)):
+       _) -> do
+        m <- parseInt match
+        tt $ month m
+      _ -> Nothing
+  }
+
+ruleAbsorbAndTheYearIs :: Rule
+ruleAbsorbAndTheYearIs = Rule
+  { name = "and? the? year is? <year>"
+  , pattern =
+    [ regex "(and )?(the )?year is?"
+    , Predicate $ isGrainOfTime TG.Year
+    ]
+  , prod = \tokens -> case tokens of
+      (_:Token Time td:_) -> tt $ notLatent td
+      _ -> Nothing
+  }
+
+ruleAbsorbAndTheDayDateIs :: Rule
+ruleAbsorbAndTheDayDateIs = Rule
+  { name = "and? the? day|date is <day>"
+  , pattern =
+    [ regex "(and )?(the )?(day|date) is?"
+    , Predicate $ isGrainOfTime TG.Day
+    ]
+  , prod = \tokens -> case tokens of
+      (_:Token Time td:_) -> tt $ notLatent td
+      _ -> Nothing
+  }
+
+ruleAndTheMonthIs :: Rule
+ruleAndTheMonthIs = Rule
+  { name = "and? the? month is <named-month>"
+  , pattern =
+    [ regex "((and )?(the )?(month is\\s*)?)"
+    , Predicate isAMonth
+    ]
+  , prod = \tokens -> case tokens of
+      (_:
+       Token Time m:
+       _) -> do
+        tt $ notLatent m
+      _ -> Nothing
+  }
+
+ruleAndTheMMIs :: Rule
+ruleAndTheMMIs = Rule
+  { name = "and? the? month is mm"
+  , pattern =
+    [ regex "((and )?(the )?(month is\\s*)?)"
+    , regex "(1[0-2]|0?[1-9])"
+    ]
+  , prod = \tokens -> case tokens of
+      (_:
+       Token RegexMatch (GroupMatch (match:_)):
+       _) -> do
+        m <- parseInt match
+        tt $ month m
+      _ -> Nothing
+  }
+
+ruleAndTheDateIs :: Rule
+ruleAndTheDateIs = Rule
+  { name = "and? the? date|day is dd"
+  , pattern =
+    [ regex "((and )?(the )?((date|day) is\\s*)?)"
+    , regex "(3[01]|[12]\\d|0?[1-9])"
+    ]
+  , prod = \tokens -> case tokens of
+      (_:
+       Token RegexMatch (GroupMatch (match:_)):
+       _) -> do
+        d <- parseInt match
+        tt $ dayOfMonth d
+      _ -> Nothing
+  }
+
+ruleAndTheYearIs :: Rule
+ruleAndTheYearIs = Rule
+  { name = "and? the? year is yyyy"
+  , pattern =
+    [ regex "((and )?(the )?(year is\\s*)?)"
+    , regex "(([4-9][0-9])|(\\d{4}))"
+    ]
+  , prod = \tokens -> case tokens of
+      (_:
+       Token RegexMatch (GroupMatch (match:_)):
+       _) -> do
+        y <- parseInt match
+        tt $ year y
+      _ -> Nothing
+  }
+
+ruleAbsorbAndTheMonthYearDayIs :: Rule
+ruleAbsorbAndTheMonthYearDayIs = Rule
+  { name = "and? the? month|year|day is <named-month>|<year>|<day>"
+  , pattern =
+    [ regex "(and )?(the )?(month|year|day|date) is"
+    , Predicate $ or . sequence [isAMonth, isGrainOfTime TG.Year, isGrainOfTime TG.Day]
+    ]
+  , prod = \tokens -> case tokens of
+      (_:Token Time td:_) -> tt $ notLatent td
+      _ -> Nothing
+  }
+
 ruleAbsorbCommaTOD :: Rule
 ruleAbsorbCommaTOD = Rule
   { name = "absorption of , after named day"
@@ -2693,6 +2820,15 @@ rules =
   , ruleAbsorbOnDay
   , ruleAbsorbOnADOW
   , ruleAbsorbInMonthYear
+  , ruleAbsorbAndTheMonthIs
+  , ruleAbsorbAndTheMMIs
+  , ruleAbsorbAndTheYearIs
+  , ruleAbsorbAndTheDayDateIs
+  --, ruleAndTheMonthIs
+  --, ruleAndTheMMIs
+  --, ruleAndTheDateIs
+  --, ruleAndTheYearIs
+  --, ruleAbsorbAndTheMonthYearDayIs
   , ruleAbsorbCommaTOD
   , ruleNextDOW
   , ruleNextTime
