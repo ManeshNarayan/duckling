@@ -2857,6 +2857,17 @@ classifiers
                    koData =
                      ClassData{prior = -infinity, unseen = -1.3862943611198906,
                                likelihoods = HashMap.fromList [], n = 0}}),
+       ("and? the? year is? <year>",
+        Classifier{okData =
+                     ClassData{prior = -infinity, unseen = -1.3862943611198906,
+                               likelihoods = HashMap.fromList [], n = 0},
+                   koData =
+                     ClassData{prior = 0.0, unseen = -2.772588722239781,
+                               likelihoods =
+                                 HashMap.fromList
+                                   [("year (latent)", -1.3217558399823195),
+                                    ("yyyy", -1.3217558399823195), ("year", -0.7621400520468967)],
+                               n = 6}}),
        ("yyyy-mm",
         Classifier{okData =
                      ClassData{prior = -1.0986122886681098,
