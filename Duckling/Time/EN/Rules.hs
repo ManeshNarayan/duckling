@@ -132,7 +132,7 @@ ruleAbsorbAndTheMonthIs :: Rule
 ruleAbsorbAndTheMonthIs = Rule
   { name = "and? the? month is? <named-month>"
   , pattern =
-    [ regex "(and )?(the )?(month)( is)?"
+    [ regex "((and|with) )?(the )?(month)( (is|being))?"
     , Predicate isAMonth
     ]
   , prod = \tokens -> case tokens of
@@ -144,7 +144,7 @@ ruleAbsorbAndTheMMIs :: Rule
 ruleAbsorbAndTheMMIs = Rule
   { name = "and? the? month is? mm"
   , pattern =
-    [ regex "(and )?(the )?(month)( is)?"
+    [ regex "((with|and) )?(the )?(month)( (being|is))?"
     , regex "(1[0-2]|0?[1-9])"
     ]
   , prod = \tokens -> case tokens of
@@ -160,7 +160,7 @@ ruleAbsorbAndTheYearIs :: Rule
 ruleAbsorbAndTheYearIs = Rule
   { name = "and? the? year is? <year>"
   , pattern =
-    [ regex "(and )?(the )?year( is)?"
+    [ regex "((and|with) )?(the )?year( (is|being))?"
     , Predicate $ isGrainOfTime TG.Year
     ]
   , prod = \tokens -> case tokens of
@@ -172,7 +172,7 @@ ruleAbsorbAndTheDayDateIs :: Rule
 ruleAbsorbAndTheDayDateIs = Rule
   { name = "and? the? day|date is <day>"
   , pattern =
-    [ regex "(and )?(the )?(day|date)( is)?"
+    [ regex "((and|with) )?(the )?(day|date)( (being|is))?"
     , Predicate $ isGrainOfTime TG.Day
     ]
   , prod = \tokens -> case tokens of
