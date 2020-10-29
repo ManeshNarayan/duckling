@@ -54,8 +54,8 @@ ruleIntersect :: Rule
 ruleIntersect = Rule
   { name = "intersect"
   , pattern =
-    [ Predicate $ isGrainFinerThan TG.Year
-    , Predicate $ or . sequence [isNotLatent, isGrainOfTime TG.Year]
+    [ Predicate $ and . sequence [isGrainFinerThan TG.Year, isGrainCoarserThan TG.Hour]
+    , Predicate $ and . sequence [or . sequence [isNotLatent, isGrainOfTime TG.Year], isGrainCoarserThan TG.Hour]
     ]
   , prod = \tokens -> case tokens of
       (Token Time td1:Token Time td2:_)
