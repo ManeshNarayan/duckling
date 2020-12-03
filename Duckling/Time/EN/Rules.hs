@@ -1175,6 +1175,22 @@ ruleNoonMidnightEOD = Rule
       _ -> Nothing
   }
 
+ruleMorningEveningNightLunch :: Rule
+ruleMorningEveningNightLunch = Rule
+  { name = "morning|evening|night|lunch|afternoon"
+  , pattern =
+    [ regex "(morning|evening|night|afternoon|lunch)"
+    ]
+  , prod = \case
+      (Token RegexMatch (GroupMatch (match:_)):_) -> tt . hour False $
+        if Text.toLower match == "morning" then 10
+        else if Text.toLower match == "evening" then 18
+        else if Text.toLower match == "afternoon" then 15
+        else if Text.toLower match == "night" then 21
+        else 14
+      _ -> Nothing
+  }
+
 rulePartOfDays :: Rule
 rulePartOfDays = Rule
   { name = "part of days"
@@ -1184,13 +1200,13 @@ rulePartOfDays = Rule
   , prod = \tokens -> case tokens of
       (Token RegexMatch (GroupMatch (match:_)):_) -> do
         let (start, end) = case Text.toLower match of
-              "morning"  -> (hour False 0, hour False 12)
-              "evening"  -> (hour False 18, hour False 0)
-              "night"    -> (hour False 18, hour False 0)
+              "morning"  -> (hour False 1, hour False 11)
+              "evening"  -> (hour False 14, hour False 0)
+              "night"    -> (hour False 18, hour False 5)
               "lunch"    -> (hour False 12, hour False 14)
               "at lunch" -> (hour False 12, hour False 14)
-              _          -> (hour False 12, hour False 19)
-        td <- interval TTime.Open start end
+              _          -> (hour False 12, hour False 20)
+        td <- interval TTime.Closed start end
         tt . partOfDay $ mkLatent td
       _ -> Nothing
   }
@@ -2891,6 +2907,7 @@ rules =
   , ruleYYYY
   , ruleDD
   , ruleNoonMidnightEOD
+  , ruleMorningEveningNightLunch
   , rulePartOfDays
   , ruleEarlyMorning
   , rulePODIn
