@@ -2642,10 +2642,10 @@ ruleInNumeral = Rule
 
 ruleDurationAfterBeforeTime :: Rule
 ruleDurationAfterBeforeTime = Rule
-  { name = "<duration> after|before|from|past <time>"
+  { name = "<duration> after|before|from|past|to <time>"
   , pattern =
     [ dimension Duration
-    , regex "(after|before|from|past)"
+    , regex "(after|before|from|past|to)"
     , dimension Time
     ]
   , prod = \tokens -> case tokens of
@@ -2654,6 +2654,7 @@ ruleDurationAfterBeforeTime = Rule
        Token Time td:
        _) -> case Text.toLower match of
          "before" -> tt $ durationBefore dd td
+         "to"     -> tt $ durationBefore dd td
          _        -> tt $ durationAfter dd td
       _ -> Nothing
   }
