@@ -28,6 +28,18 @@ import Duckling.Types
 import qualified Duckling.AmountOfMoney.Types as TAmountOfMoney
 import qualified Duckling.Numeral.Types as TNumeral
 
+ruleAmount :: Rule
+ruleAmount = Rule
+  { name = "<amount>"
+  , pattern =
+    [ Predicate isPositive
+    ]
+  , prod = \case
+      (Token Numeral NumeralData{TNumeral.value = v}:
+       _) -> Just . Token AmountOfMoney . withValue v $ currencyOnly Unnamed
+      _ -> Nothing
+  }
+
 ruleUnitAmount :: Rule
 ruleUnitAmount = Rule
   { name = "<unit> <amount>"
@@ -389,4 +401,5 @@ rules =
   , rulePrecision
   , ruleRinggit
   , ruleRiyals
+  , ruleAmount
   ]
