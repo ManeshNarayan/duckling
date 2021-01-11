@@ -1747,7 +1747,7 @@ ruleEndOrBeginningOfMonth = Rule
       (Token RegexMatch (GroupMatch (_:match:_)):Token Time td:_) -> do
         (sd, ed) <- case Text.toLower match of
           "beginning" -> Just (1, 10)
-          "end"       -> Just (21, -1)
+          "end"       -> Just (28, -1)
           _           -> Nothing
         start <- intersect td $ dayOfMonth sd
         end <- if ed /= -1
@@ -1772,7 +1772,7 @@ ruleEndOfMonth = Rule
               ( Just now
               , intersect (dayOfMonth 1) $ cycleMonth 1)
             else
-              ( intersect (dayOfMonth 21) $ cycleMonth 0
+              ( intersect (dayOfMonth 28) $ cycleMonth 0
               , Just $ cycleLastOf TG.Day $ cycleMonth 0)
       _ -> Nothing
   }
@@ -1798,7 +1798,7 @@ ruleEndOrBeginningOfYear = Rule
       (Token RegexMatch (GroupMatch (_:match:_)):Token Time td:_) -> do
         (sd, ed) <- case Text.toLower match of
           "beginning" -> Just (1, 4)
-          "end"       -> Just (9, -1)
+          "end"       -> Just (12, -1)
           _           -> Nothing
         start <- intersect td $ month sd
         end <- if ed /= -1
@@ -1822,7 +1822,7 @@ ruleEndOfYear = Rule
           where
             std = if "by" `Text.isPrefixOf` Text.toLower match
               then Just now
-              else intersect (month 9) $ cycleYear 0
+              else intersect (month 12) $ cycleYear 0
             cycleYear = cycleNth TG.Year
       _ -> Nothing
   }
